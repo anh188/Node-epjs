@@ -43,6 +43,4 @@ router.delete('/:id/:nameproduct',(req,res)=>{
     res.status(200).json({msg:`delete success customer ${id}`})
 })
 
-
-
 module.exports = router;
