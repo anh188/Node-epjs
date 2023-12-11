@@ -8,6 +8,8 @@ router.get('/status', (req, res) => {
     res.status(200).json({ msg: 'API are ready !'});
 })
 
+router.use('/users', userRouter)
+
 // router.use('/users', userRouter);
 router.use('/customer', customer);
 router.use('/product', product);
