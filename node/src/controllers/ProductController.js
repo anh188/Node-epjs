@@ -1,47 +1,65 @@
-// class ProductController {
-//     create= (req, res, next) =>{
-//         try{
-//             const {product_id, product_name} = req.body;
-//             res.status(200).json({msg:` Create success`,
-//                 product_id,
-//                 product_name
-//             }) 
-//         }catch (error){
-//             throw error;
-//         }
-//     } 
+const ProductService = require("../services/ProductService");
 
-//     get= (req,res,next) =>{
-//         try{
-//             const {product_id, product_name} = req.body;
-//             res.status(200).json({msg:` ID: ${product_id}, Name: ${product_name}`})
-            
-//         }catch(error){
-//             throw error;
-//         }
-//     }
+class ProductController{
+    create = async(req, res, next) =>{
+        try{
+            const{name, manufacturer, year, quantity, price} = req.body;
+            let data = {
+                name, manufacturer, year, quantity, price
+            }
+            const product = await ProductService.create(data);
 
-//     update = (req, res, next) => {
-//         try{
-//             const {product_id, product_name} = req.body;
-//             res.status(200).json({msg:` Update success`,
-//                 product_id,
-//                 product_name
-//             }) 
-//         }catch (error){
-//             throw error;
-//         }
-//     }
+            res.status(200).json({
+                product
+            })
+        } catch(error){
+            throw error;
+        }
+    }
+    get = async (req, res, next) =>{
+        try{
 
-//     delete = (req, res, next) => {
-//         try{
-//             let product_id = req.params.product_id;
-//             let product_name = req.params.product_name;
-//             res.status(200).json({msg:` Delete success ID: ${product_id}, Name: ${product_name}`}) 
-//         }catch (error){
-//             throw error;
-//         }
-//     }
-// }
+            const products = await ProductService.get();
+            res.status(200).json({
+                products
+            })
+        } catch(error){
+            throw error;
+        }
+    }
 
-// module.exports = new ProductController;
+    update = async (req, res, next) =>{
+        try{
+            const{ name, manufacturer, year, quantity, price} = req.body;
+            const {id} = req.params;
+
+            let data = {
+                name, manufacturer, year, quantity, price
+            }
+            const result = await ProductService.update(id, data);
+            if (result){
+                res.status(200).json({'msg': 'Updated'})
+            }
+            else{
+                throw new Error('update fail!!')
+            }
+        } catch(error){
+            throw error;
+        }
+    }
+
+    delete = async(req,res,next) =>{
+        try{
+            const{id} = req.params;
+            const result = await ProductService.delete(id);
+            if(result){
+                res.status(200).json({'msg':'Deleted'})
+            }else{
+                throw new Error('Delete fail!!')
+            }
+        } catch(error){
+            throw error;
+        }
+    }
+}
+module.exports = new ProductController;
