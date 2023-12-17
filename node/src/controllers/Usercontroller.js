@@ -1,54 +1,75 @@
+const UserService = require("../services/UserService");
+
 class UserController{
-    create=(req, res, next) =>{
+    //xu ly
+    create= async (req, res, next) =>{
         try{
-            a();
-            const{username, password} = req.body;
-            res.status(200).json({
-                username,
-                password
+            const{username, email, phone, age} = req.body;
+            //goi den tang service
+            let data = {
+                username, email, phone, age
+            }
+            const user = await UserService.create(data);
+            
+                res.status(200).json({  
+                user
             })
         } catch (error){
             throw error;
         }
     }
 
-    get=(req, res, next) =>{
+    getAll= async (req, res, next) =>{
         try{
-            const{username, password}=req.body;
-            console.log(`Create`)
+            //Goi den service
+            const users = await UserService.getAll();
             res.status(200).json({
-                username,
-                password
-             });
+                users
+            })
         } catch (error){
             throw error;
         }
     }
 
-    update =(req, res, next)=>{
+    update = async(req, res, next) =>{
         try{
-            const{username, password}=req.body
-            res.status(200).json({
-                username,password
-            })
-        } catch(error){
-            throw error;
-        }
-    }
-    
-    delete = (req, res,next) =>{
-        try{
-            const{username}=req.body
-            res.status(200).json({msg: `delete user: ${username}`})
+            const{ username, email, phone, age} = req.body;
+            const {id} = req.params;
+
+            let data = {
+                username, email, phone, age
+            }
+
+            const result = await UserService.update(id, data);
+            if (result){
+                res.status(200).json({'msg':'Updated'})
+            }
+            else{
+                throw new Error('Update fail')
+            }
+        
         } catch(error){
             throw error;
         }
     }
 
-    //creat =>POST
-    //update => PUT
-    //delete => DELETE
-    //get => GET
+    delete = async(req, res, next) =>{
+        try{
+            const {id} = req.params;
+
+            const result = await UserService.delete(id);
+            if (result){
+                res.status(200).json({'msg':'Delete'})
+            }
+            else{
+                throw new Error('Delete fail')
+            }
+        
+        } catch(error){
+            throw error;
+        }
+    }
+
 }
 
 module.exports =new UserController();

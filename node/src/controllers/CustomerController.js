@@ -1,48 +1,69 @@
+const CustomerService = require("../services/CustomerService");
+
 class CustomerController {
-    create= (req, res, next) =>{
+    create= async (req, res, next) =>{
         try{
-            abc();
-            const {custom_id, custom_name} = req.body;
-            res.status(200).json({msg:` Create success`,
-                custom_id,
-                custom_name
-            }) 
+            const {username, phone, email, address, birthdate, gender} = req.body;
+            
+            let data = {
+                username, phone, email, address, birthdate, gender
+            }
+            const customer = await CustomerService.create(data);
+            
+            res.status(200).json({
+                customer
+            })
         }catch (error){
             throw error;
         }
     } 
 
-    get= (req,res,next) =>{
+    get = async (req, res, next) =>{
         try{
-            const {custom_id, custom_name} = req.body;
-            res.status(200).json({msg:` ID: ${custom_id}, Name: ${custom_name}`})
-            
-        }catch(error){
+
+            const customers = await CustomerService.get();
+            res.status(200).json({
+                customers
+            })
+        } catch(error){
             throw error;
         }
     }
 
-    update = (req, res, next) => {
+    update = async (req, res, next) =>{
         try{
-            const {custom_id, custom_name} = req.body;
-            res.status(200).json({msg:` Update success`,
-                custom_id,
-                custom_name
-            }) 
-        }catch (error){
+            const{ username, phone, email, address, birthdate, gender} = req.body;
+            const {id} = req.params;
+
+            let data = {
+                username, phone, email, address, birthdate, gender
+            }
+            const result = await CustomerService.update(id, data);
+            if (result){
+                res.status(200).json({'msg': 'Updated'})
+            }
+            else{
+                throw new Error('update fail!!')
+            }
+        } catch(error){
             throw error;
         }
     }
 
-    delete = (req, res, next) => {
+    delete = async(req,res,next) =>{
         try{
-            let custom_id = req.params.custom_id;
-            let custom_name = req.params.custom_name;
-            res.status(200).json({msg:` Delete success ID: ${custom_id}, Name: ${custom_name}`}) 
-        }catch (error){
+            const{id} = req.params;
+            const result = await CustomerService.delete(id);
+            if(result){
+                res.status(200).json({'msg':'Deleted'})
+            }else{
+                throw new Error('Delete fail!!')
+            }
+        } catch(error){
             throw error;
         }
     }
+
 }
 
 module.exports = new CustomerController;
